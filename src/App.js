@@ -5,7 +5,7 @@ const App = () => {
     { name: 'Arto Hellas' }
   ]) 
   const [ newName, setNewName ] = useState('');
-  const [ number, setNumber ] = useState(null);
+  const [ newNumber, setNewNumber ] = useState(null);
   
   const handleChangeName = (e) => {
     // get value from events object
@@ -16,14 +16,14 @@ const App = () => {
 
   const handleChangeNumber = (e) => {
     const val = e.target.value;
-    setNumber(val);
+    setNewNumber(val);
   }
 
   const addPerson = (e) => {
     e.preventDefault(); // default behavior of button type=submit is to reload page
     const filtered = persons.filter(p => p.name === newName);
     if (filtered.length === 0) {
-      const newPerson = {name: newName};
+      const newPerson = {name: newName, number: newNumber};
       const updated = persons.concat(newPerson);
       setPersons(updated); 
     } else {
@@ -34,7 +34,7 @@ const App = () => {
 
   return (
     <div>
-      <div>debug: {number} persons: {JSON.stringify(persons)}</div>
+      <div>debug: {newNumber} persons: {JSON.stringify(persons)}</div>
       <h2>Phonebook</h2>
       <form>
         <div>
@@ -46,7 +46,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-     {persons.map(person => <p key={person.name}>{person.name}</p>)}
+     {persons.map(person => <p key={person.name}>{person.name} {person.number}</p>)}
     </div>
   )
 }
