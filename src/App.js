@@ -4,13 +4,19 @@ const App = () => {
   const [ persons, setPersons] = useState([ // person is an object!!!
     { name: 'Arto Hellas' }
   ]) 
-  const [ newName, setNewName ] = useState('')
+  const [ newName, setNewName ] = useState('');
+  const [ number, setNumber ] = useState(null);
   
-  const handleChange = (e) => {
+  const handleChangeName = (e) => {
     // get value from events object
     // use set newName to change state newName to value
     const val = e.target.value;
     setNewName(val);
+  };
+
+  const handleChangeNumber = (e) => {
+    const val = e.target.value;
+    setNumber(val);
   }
 
   const addPerson = (e) => {
@@ -28,12 +34,13 @@ const App = () => {
 
   return (
     <div>
-      <div>debug: {newName} persons: {JSON.stringify(persons)}</div>
+      <div>debug: {number} persons: {JSON.stringify(persons)}</div>
       <h2>Phonebook</h2>
       <form>
         <div>
-          name: <input onChange={handleChange} />
+          name: <input onChange={handleChangeName} />
         </div>
+        <div>number: <input onChange={handleChangeNumber}/></div>
         <div>
           <button type="submit" onClick={addPerson}>add</button>
         </div>
@@ -45,6 +52,13 @@ const App = () => {
 }
 
 export default App;
+
+//2.8 add ability to add a phone number with name
+// new input element/textbox
+// new piece of state to keep track of number input
+// onChange handler on input tag to synchronize state to input
+// onclick handler to add name and number to persons list
+  // since there's one button for box text boxes add inClick handler to form element?
 
 // 2.7 add data validation: in addPerson use array.includes to check if user input already exists in persons
 
