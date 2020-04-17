@@ -15,14 +15,20 @@ const App = () => {
 
   const addPerson = (e) => {
     e.preventDefault(); // default behavior of button type=submit is to reload page
-    const newPerson = {name: newName};
-    const updated = persons.concat(newPerson);
-    setPersons(updated);
+    const filtered = persons.filter(p => p.name === newName);
+    if (filtered.length === 0) {
+      const newPerson = {name: newName};
+      const updated = persons.concat(newPerson);
+      setPersons(updated); 
+    } else {
+        alert(`${newName} is already added to phonebook`);
+    }
+    setNewName(''); // clears newName after persons is updated, so clicking add again will not add the same name again
   }
 
   return (
     <div>
-      <div>debug: {JSON.stringify(persons)}</div>
+      <div>debug: {newName} persons: {JSON.stringify(persons)}</div>
       <h2>Phonebook</h2>
       <form>
         <div>
@@ -38,7 +44,9 @@ const App = () => {
   )
 }
 
-export default App
+export default App;
+
+// 2.7 add data validation: in addPerson use array.includes to check if user input already exists in persons
 
 // get app to render persons state: use array.map() used to render array of names
 
