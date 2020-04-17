@@ -13,16 +13,23 @@ const App = () => {
     setNewName(val);
   }
 
+  const addPerson = (e) => {
+    e.preventDefault(); // default behavior of button type=submit is to reload page
+    const newPerson = {name: newName};
+    const updated = persons.concat(newPerson);
+    setPersons(updated);
+  }
+
   return (
     <div>
-      <div>debug: {newName}</div>
+      <div>debug: {JSON.stringify(persons)}</div>
       <h2>Phonebook</h2>
       <form>
         <div>
           name: <input onChange={handleChange} />
         </div>
         <div>
-          <button type="submit">add</button>
+          <button type="submit" onClick={addPerson}>add</button>
         </div>
       </form>
       <h2>Numbers</h2>
@@ -33,9 +40,9 @@ const App = () => {
 
 export default App
 
-// get app to render persons state
+// get app to render persons state: use array.map() used to render array of names
 
 // add names to list: 
-//1. text input will have an onChange handler to set user input to newName state
+//1. text input will have an onChange handler to set user input to newNamestate 
 //2. button element will have an onClick handler that adds the value in newName //into the persons array
-// array.map() used to render array of names
+//  - handler wraps newName in an object and then concats it to persons. then handler users setPersons to set concatenated array as state. then clears textbox
