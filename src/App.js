@@ -1,11 +1,17 @@
 import React, { useState } from 'react'
 
 const App = () => {
-  const [ persons, setPersons] = useState([ // person is an object!!!
-    { name: 'Arto Hellas' }
-  ]) 
+  const [ persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
+  ]);
+
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredResults, setFilteredResults] = useState([]);
   
   const handleChangeName = (e) => {
     // get value from events object
@@ -19,6 +25,17 @@ const App = () => {
     setNewNumber(val);
   }
 
+  const handleChangeFilter = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term.toLowerCase());
+    const filtered = persons.filter(person => {
+      let name = person.name.toLowerCase();
+      // let number = person.number; // number should already be a string
+      return name.includes(searchTerm);
+    });
+    setFilteredResults(filtered);
+  }
+
   const addPerson = (e) => {
     e.preventDefault(); // default behavior of button type=submit is to reload page
     const filtered = persons.filter(p => p.name === newName);
@@ -30,12 +47,17 @@ const App = () => {
         alert(`${newName} is already added to phonebook`);
     }
     setNewName(''); // clears newName after persons is updated, so clicking add again will not add the same name again
+    setNewName('');
   }
 
   return (
     <div>
-      <div>debug: {newNumber} persons: {JSON.stringify(persons)}</div>
+      <div> filtered: {JSON.stringify(filteredResults)}</div>
       <h2>Phonebook</h2>
+      <div> filter shown with
+        <input onChange={handleChangeFilter}/>
+      </div>
+      <h2>add new</h2>
       <form>
         <div>
           name: <input onChange={handleChangeName} />
@@ -52,6 +74,17 @@ const App = () => {
 }
 
 export default App;
+
+// 2.9 add filter functionality; user input in text box, determines whech person objects in persons array to render
+  // add new state of results after filtering
+  //add new state to keep track of results of filtering
+  // add onChange handler to synchronize user input to state
+  // filter logic
+    // convert searchTerm to lowercase
+    // use array.filter
+      // test: does search term occur as substring in person.name or person.number..use String.includes()
+// filtering happens onChange so filtering logic should be inside handleChangeFilter
+// add condition to determine whether to render persons array or the filtered results...condition: if input for filter is emply...?
 
 //2.8 add ability to add a phone number with name
 // new input element/textbox
