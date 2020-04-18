@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
 
 const App = () => {
-  const [ persons, setPersons] = useState([
+  const [ persons, setPersons] = useState(
+    [
     { name: 'Arto Hellas', number: '040-123456' },
     { name: 'Ada Lovelace', number: '39-44-5323523' },
     { name: 'Dan Abramov', number: '12-43-234345' },
     { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]);
+  ]
+  );
 
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  // const [searchTerm, setSearchTerm] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
   
   const handleChangeName = (e) => {
@@ -25,20 +27,21 @@ const App = () => {
     setNewNumber(val);
   }
 
-  const handleChangeFilter = (e) => {
-    const term = e.target.value;
-    setSearchTerm(term.toLowerCase());
+  const handleChangeFilter = (e) => { 
+    const term = e.target.value.toLowerCase();
+    console.log(term);
+    // setSearchTerm(term.toLowerCase());
     const filtered = persons.filter(person => {
       let name = person.name.toLowerCase();
       // let number = person.number; // number should already be a string
-      return name.includes(searchTerm);
+      return name.includes(term);
     });
     setFilteredResults(filtered);
   }
 
   const addPerson = (e) => {
     e.preventDefault(); // default behavior of button type=submit is to reload page
-    const filtered = persons.filter(p => p.name === newName);
+    const filtered = persons.filter(p => p.name === newName); // check for duplicate entries
     if (filtered.length === 0) {
       const newPerson = {name: newName, number: newNumber};
       const updated = persons.concat(newPerson);
@@ -52,7 +55,10 @@ const App = () => {
 
   return (
     <div>
-      <div> filtered: {JSON.stringify(filteredResults)}</div>
+      <div> debug: 
+      persons: {JSON.stringify(persons)} <br />
+      filtered: {JSON.stringify(filteredResults)} <br />
+      </div>
       <h2>Phonebook</h2>
       <div> filter shown with
         <input onChange={handleChangeFilter}/>
@@ -74,6 +80,10 @@ const App = () => {
 }
 
 export default App;
+
+// debugging 2.9, step4: // problem:  state filtered is not up to date with the user input (is one letter behind)
+  // examine where setSearchTerm amd setFilteredResults are and identify where re-renders are happening
+    //results: filtering works when search term is removed from being a state; state change is happening after render?
 
 // 2.9 add filter functionality; user input in text box, determines whech person objects in persons array to render
   // add new state of results after filtering
