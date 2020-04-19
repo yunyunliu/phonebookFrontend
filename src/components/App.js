@@ -72,9 +72,8 @@ const App = () => {
       filtered: {JSON.stringify(filteredResults)} <br />
       </div>
       <h2>Phonebook</h2>
-      <div> filter shown with
-        <input onChange={handleChangeFilter}/>
-      </div>
+      <Filter handleFilter={handleChangeFilter}/>
+     
       <h2>add new</h2>
       <form>
         <div>
