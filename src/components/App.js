@@ -72,17 +72,9 @@ const App = () => {
       </div>
       <h2>Phonebook</h2>
       <Filter handleFilter={handleChangeFilter}/>
-     
       <h2>add new</h2>
-      <form>
-        <div>
-          name: <input onChange={handleChangeName} />
-        </div>
-        <div>number: <input onChange={handleChangeNumber}/></div>
-        <div>
-          <button type="submit" onClick={addPerson}>add</button>
-        </div>
-      </form>
+      <PersonForm handleName={handleChangeName} handleNumber={handleChangeNumber} add={addPerson} />
+     
       <h2>Numbers</h2>
      {phonebook}
     </div>
