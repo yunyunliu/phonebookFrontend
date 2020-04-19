@@ -53,6 +53,15 @@ const App = () => {
     setNewName('');
   }
 
+  let phonebook;
+  if (filteredResults.length === 0) {
+    phonebook = persons.map(person => {
+      return (<p key={person.name}>{person.name} {person.number}</p>);
+    })
+  } else {
+    phonebook = filteredResults.map(result => <p key={result.name}>{result.name} {result.number}</p>)
+  }
+
   return (
     <div>
       <div> debug: 
@@ -74,7 +83,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-     {persons.map(person => <p key={person.name}>{person.name} {person.number}</p>)}
+     {phonebook}
     </div>
   )
 }
