@@ -76,7 +76,7 @@ const App = () => {
       <PersonForm handleName={handleChangeName} handleNumber={handleChangeNumber} add={addPerson} />
      
       <h2>Numbers</h2>
-     {phonebook}
+      <Persons persons={phonebook} />
     </div>
   )
 }

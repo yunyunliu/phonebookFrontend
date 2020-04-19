@@ -1,7 +1,7 @@
 import React from 'react';
 
-const Persons = (props) => {
-  return
+const Persons = ({persons}) => {
+  return persons;
 }
 
 export default Persons;
