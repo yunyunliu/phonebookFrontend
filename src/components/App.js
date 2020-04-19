@@ -15,7 +15,7 @@ const App = () => {
 
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState(null);
-  // const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
   
   const handleChangeName = (e) => {
@@ -30,16 +30,25 @@ const App = () => {
     setNewNumber(val);
   }
 
+  let phonebook;
+  if (searchTerm === '') { 
+    phonebook = persons.map(person => {
+      return (<p key={person.name}>{person.name} {person.number}</p>);
+    })
+  } else {
+    phonebook = filteredResults.map(result => <p key={result.name}>{result.name} {result.number}</p>)
+  }
+
   const handleChangeFilter = (e) => { 
     const term = e.target.value.toLowerCase();
     console.log(term);
-    // setSearchTerm(term.toLowerCase());
-    const filtered = persons.filter(person => {
+    setSearchTerm(term);
+    const results = persons.filter(person => {
       let name = person.name.toLowerCase();
       // let number = person.number; // number should already be a string
       return name.includes(term);
     });
-    setFilteredResults(filtered);
+    setFilteredResults(results);
   }
 
   const addPerson = (e) => {
@@ -53,16 +62,6 @@ const App = () => {
         alert(`${newName} is already added to phonebook`);
     }
     setNewName(''); // clears newName after persons is updated, so clicking add again will not add the same name again
-    setNewName('');
-  }
-
-  let phonebook;
-  if (filteredResults.length === 0) {
-    phonebook = persons.map(person => {
-      return (<p key={person.name}>{person.name} {person.number}</p>);
-    })
-  } else {
-    phonebook = filteredResults.map(result => <p key={result.name}>{result.name} {result.number}</p>)
   }
 
   return (
@@ -91,6 +90,10 @@ const App = () => {
 }
 
 export default App;
+
+//step 5 debugging: 
+  // filteredResults.length === 0 is a bad condition for conditonal rendering because the results array is empty is nothing has been entered into the input area and if no results are found....a better condition is input value === '' since that would mean no input at all
+    //the only way to access the value of the filter input box is search term is a state again
 
 // debugging 2.9, step4: // problem:  state filtered is not up to date with the user input (is one letter behind)
   // examine where setSearchTerm amd setFilteredResults are and identify where re-renders are happening
