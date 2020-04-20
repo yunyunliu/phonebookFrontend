@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Filter from './Filter';
 import PersonForm from './PersonForm';
 import Persons from './Persons';
