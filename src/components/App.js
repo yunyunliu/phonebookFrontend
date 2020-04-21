@@ -37,11 +37,21 @@ const App = () => {
   let phonebook;
   if (searchTerm === '') { 
     phonebook = persons.map(person => {
-      return (<p key={person.name}>{person.name} {person.number}</p>);
-    })
+      return (
+        <p key={person.name}>
+          {person.name} {person.number}<input type="button" value="delete"/>
+        </p>);
+    });
   } else {
-    phonebook = filteredResults.map(result => <p key={result.name}>{result.name} {result.number}</p>)
-  }
+    phonebook = filteredResults.map(result => {
+      return (
+        <p key={result.name}>
+          {result.name} {result.number}
+          <input type="button" value="delete" /> 
+        </p>);
+  });
+}
+  
 
   const handleChangeFilter = (e) => { 
     const term = e.target.value.toLowerCase();
