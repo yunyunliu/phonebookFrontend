@@ -3,6 +3,7 @@ import axios from 'axios';
 import Filter from './Filter';
 import PersonForm from './PersonForm';
 import Persons from './Persons';
+import personsServices from '../services/persons';
 
 const App = () => {
   const [ persons, setPersons] = useState([]);
@@ -11,10 +12,11 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
+
   const hook = () => {
-    axios.get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data);
+    personsServices.getAll()
+      .then(data => {
+        setPersons(data);
       });
   };
 
@@ -58,8 +60,11 @@ const App = () => {
     const filtered = persons.filter(p => p.name === newName); // check for duplicate entries
     if (filtered.length === 0) {
       const newPerson = {name: newName, number: newNumber};
-      const updated = persons.concat(newPerson);
-      setPersons(updated); 
+      personsServices.create(newPerson)
+        .then(created => {
+          const updated = persons.concat(created);
+          setPersons(updated); 
+        }); 
     } else {
         alert(`${newName} is already added to phonebook`);
     }
