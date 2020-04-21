@@ -34,13 +34,15 @@ const App = () => {
     setNewNumber(val);
   }
   
-  const handleDelete = id => {
-    personsServices.deleteEntry(id)
+  const handleDelete = person => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personsServices.deleteEntry(person.id)
       .then(() => {
-        const updated = persons.filter(person => person.id !== id);
+        const updated = persons.filter(p => p.name !== person.name);
         setPersons(updated);
       });
-    };
+    }
+  };
 
   let phonebook;
   if (searchTerm === '') { 
@@ -48,7 +50,7 @@ const App = () => {
       return (
         <p key={person.name}>
           {person.name} {person.number}
-          <input type="button" value="delete" onClick={() => handleDelete(person.id)}/>
+          <input type="button" value="delete" onClick={() => handleDelete(person)}/>
         </p>);
     });
   } else {
@@ -56,7 +58,7 @@ const App = () => {
       return (
         <p key={result.name}>
           {result.name} {result.number}
-          <input type="button" value="delete" /> 
+          <input type="button" value="delete" onClick={() => handleDelete(result.id)}/> 
         </p>);
   });
 }
@@ -91,10 +93,10 @@ const App = () => {
 
   return (
     <div>
-      <div> debug: 
+      {/* <div> debug: 
       persons: {JSON.stringify(persons)} <br />
       filtered: {JSON.stringify(filteredResults)} <br />
-      </div>
+      </div> */}
       <h2>Phonebook</h2>
       <Filter handleFilter={handleChangeFilter}/>
       <h2>add new</h2>
