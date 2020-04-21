@@ -33,13 +33,22 @@ const App = () => {
     const val = e.target.value;
     setNewNumber(val);
   }
+  
+  const handleDelete = id => {
+    personsServices.deleteEntry(id)
+      .then(() => {
+        const updated = persons.filter(person => person.id !== id);
+        setPersons(updated);
+      });
+    };
 
   let phonebook;
   if (searchTerm === '') { 
     phonebook = persons.map(person => {
       return (
         <p key={person.name}>
-          {person.name} {person.number}<input type="button" value="delete"/>
+          {person.name} {person.number}
+          <input type="button" value="delete" onClick={() => handleDelete(person.id)}/>
         </p>);
     });
   } else {
@@ -51,7 +60,6 @@ const App = () => {
         </p>);
   });
 }
-  
 
   const handleChangeFilter = (e) => { 
     const term = e.target.value.toLowerCase();
