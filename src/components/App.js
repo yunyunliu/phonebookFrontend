@@ -86,9 +86,28 @@ const App = () => {
           setPersons(updated); 
         }); 
     } else {
-        alert(`${newName} is already added to phonebook`);
-    }
-    setNewName(''); // clears newName after persons is updated, so clicking add again will not add the same name again
+      const duplicate = filtered[0];
+      if (window.confirm(`${duplicate.name} is already added to phonebook, replace old number with a new one?`)) {
+        console.log('previous entry with name:', duplicate)
+        const newEntry = {...duplicate, number: newNumber};
+        console.log('updated with new number:', newEntry);
+  
+        personsServices.update(duplicate.id, newEntry)
+          .then(updated => {
+            console.log('modified entry:', updated);
+            const updatedPersons = persons.map(person => {
+              if (person.id !== updated.id) { // if 
+                return person;
+              } else {
+                return updated;
+              }
+            });
+            setPersons(updatedPersons);
+            console.log('persons:', persons);
+          });   
+      }
+      setNewName(''); // clears newName after persons is updated, so clicking add again will not add the same name again
+    } 
   }
 
   return (
