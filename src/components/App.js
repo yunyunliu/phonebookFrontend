@@ -3,11 +3,12 @@ import axios from 'axios';
 import Filter from './Filter';
 import PersonForm from './PersonForm';
 import Persons from './Persons';
+import Notification from './Notification';
 import personsServices from '../services/persons';
 
 const App = () => {
   const [ persons, setPersons] = useState([]);
-
+  const [message, setMessage] = useState('');
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,27 +23,83 @@ const App = () => {
 
   useEffect(hook, []);
 
-  const handleChangeName = (e) => {
+  const handleChangeName = e => {
     // get value from events object
     // use set newName to change state newName to value
     const val = e.target.value;
     setNewName(val);
   };
 
-  const handleChangeNumber = (e) => {
+  const handleChangeNumber = e => {
     const val = e.target.value;
     setNewNumber(val);
   }
   
+  const handleChangeFilter = e => { 
+    const term = e.target.value.toLowerCase();
+    console.log(term);
+    setSearchTerm(term);
+    const results = persons.filter(person => {
+      let name = person.name.toLowerCase();
+      // let number = person.number; // number should already be a string
+      return name.includes(term);
+    });
+    setFilteredResults(results);
+  }
+
   const handleDelete = person => {
     if (window.confirm(`Delete ${person.name}?`)) {
       personsServices.deleteEntry(person.id)
       .then(() => {
         const updated = persons.filter(p => p.name !== person.name);
         setPersons(updated);
+        setMessage(`${person.name} successfully deleted`);
+        setTimeout(() => {
+          setMessage('');
+        }, 5000);
       });
     }
   };
+
+  const addPerson = (e) => {
+    e.preventDefault(); // default behavior of button type=submit is to reload page
+    const filtered = persons.filter(p => p.name === newName); // check for duplicate entries
+    if (filtered.length === 0) {
+      const newPerson = {name: newName, number: newNumber};
+      personsServices.create(newPerson)
+        .then(created => {
+          const updated = persons.concat(created);
+          setPersons(updated); 
+          setMessage(`added ${created.name}`);
+          setTimeout(() => {
+            setMessage('');
+          }, 5000);
+        }); 
+    } else {
+      const duplicate = filtered[0];
+      if (window.confirm(`${duplicate.name} is already added to phonebook, replace old number with a new one?`)) {
+        const newEntry = {...duplicate, number: newNumber};
+  
+        personsServices.update(duplicate.id, newEntry)
+          .then(updated => {
+            console.log('modified entry:', updated);
+            const updatedPersons = persons.map(person => {
+              if (person.id !== updated.id) { // if 
+                return person;
+              } else {
+                return updated;
+              }
+            });
+            setPersons(updatedPersons);
+            setMessage(`changed phone number for ${updated.name}`);
+            setTimeout(() => {
+              setMessage('');
+            }, 5000);
+          });   
+      }
+      setNewName(''); // clears newName after persons is updated, so clicking add again will not add the same name again
+    } 
+  }
 
   let phonebook;
   if (searchTerm === '') { 
@@ -63,53 +120,6 @@ const App = () => {
   });
 }
 
-  const handleChangeFilter = (e) => { 
-    const term = e.target.value.toLowerCase();
-    console.log(term);
-    setSearchTerm(term);
-    const results = persons.filter(person => {
-      let name = person.name.toLowerCase();
-      // let number = person.number; // number should already be a string
-      return name.includes(term);
-    });
-    setFilteredResults(results);
-  }
-
-  const addPerson = (e) => {
-    e.preventDefault(); // default behavior of button type=submit is to reload page
-    const filtered = persons.filter(p => p.name === newName); // check for duplicate entries
-    if (filtered.length === 0) {
-      const newPerson = {name: newName, number: newNumber};
-      personsServices.create(newPerson)
-        .then(created => {
-          const updated = persons.concat(created);
-          setPersons(updated); 
-        }); 
-    } else {
-      const duplicate = filtered[0];
-      if (window.confirm(`${duplicate.name} is already added to phonebook, replace old number with a new one?`)) {
-        console.log('previous entry with name:', duplicate)
-        const newEntry = {...duplicate, number: newNumber};
-        console.log('updated with new number:', newEntry);
-  
-        personsServices.update(duplicate.id, newEntry)
-          .then(updated => {
-            console.log('modified entry:', updated);
-            const updatedPersons = persons.map(person => {
-              if (person.id !== updated.id) { // if 
-                return person;
-              } else {
-                return updated;
-              }
-            });
-            setPersons(updatedPersons);
-            console.log('persons:', persons);
-          });   
-      }
-      setNewName(''); // clears newName after persons is updated, so clicking add again will not add the same name again
-    } 
-  }
-
   return (
     <div>
       {/* <div> debug: 
@@ -117,6 +127,7 @@ const App = () => {
       filtered: {JSON.stringify(filteredResults)} <br />
       </div> */}
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter handleFilter={handleChangeFilter}/>
       <h2>add new</h2>
       <PersonForm handleName={handleChangeName} handleNumber={handleChangeNumber} add={addPerson} />
