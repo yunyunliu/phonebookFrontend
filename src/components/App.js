@@ -95,6 +95,10 @@ const App = () => {
             setTimeout(() => {
               setMessage('');
             }, 5000);
+          })
+          .catch(err => {
+            console.log(err);
+            setMessage(`ERROR: ${newEntry.name} has already been deleted from the server`)
           });   
       }
       setNewName(''); // clears newName after persons is updated, so clicking add again will not add the same name again
