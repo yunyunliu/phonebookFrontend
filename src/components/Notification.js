@@ -1,8 +1,9 @@
 import React from 'react';
 
 const Notification = ({message}) => {
+  const m = message.toLowerCase();
   let styling;
-  if (message.includes('ERROR')) {
+  if (m.includes('error')) {
     styling = {
       color: 'red',
       background: 'lightgrey',
