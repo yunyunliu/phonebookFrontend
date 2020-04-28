@@ -63,47 +63,50 @@ const App = () => {
 
   const addPerson = (e) => {
     e.preventDefault(); // default behavior of button type=submit is to reload page
-    const filtered = persons.filter(p => p.name === newName); // check for duplicate entries
-    if (filtered.length === 0) {
-      const newPerson = {name: newName, number: newNumber};
-      personsServices.create(newPerson)
-        .then(created => {
-          const updated = persons.concat(created);
-          setPersons(updated); 
-          setMessage(`added ${created.name}`);
-          setTimeout(() => {
-            setMessage('');
-          }, 5000);
-        }); 
-    } else {
-      const duplicate = filtered[0];
-      if (window.confirm(`${duplicate.name} is already added to phonebook, replace old number with a new one?`)) {
-        const newEntry = {...duplicate, number: newNumber};
+    const newPerson = {name: newName, number: newNumber};
+    personsServices.create(newPerson)
+      .then(created => {
+        const updated = persons.concat(created);
+        setPersons(updated); 
+        setMessage(`added ${created.name}`);
+        setTimeout(() => {
+          setMessage('');
+        }, 5000);
+      })
+      .catch(err => {
+        console.log('this is the error', err.response.data.error, typeof err.response.data.error)
+        setMessage(JSON.stringify(err.response.data));
+        setTimeout(() => {
+          setMessage('');
+        }, 5000)
+      }); 
+      // const duplicate = filtered[0];
+      // if (window.confirm(`${duplicate.name} is already added to phonebook, replace old number with a new one?`)) {
+      //   const newEntry = {...duplicate, number: newNumber};
   
-        personsServices.update(duplicate.id, newEntry)
-          .then(updated => {
-            console.log('modified entry:', updated);
-            const updatedPersons = persons.map(person => {
-              if (person.id !== updated.id) { // if 
-                return person;
-              } else {
-                return updated;
-              }
-            });
-            setPersons(updatedPersons);
-            setMessage(`changed phone number for ${updated.name}`);
-            setTimeout(() => {
-              setMessage('');
-            }, 5000);
-          })
-          .catch(err => {
-            console.log(err);
-            setMessage(`ERROR: ${newEntry.name} has already been deleted from the server`)
-          });   
-      }
+      //   personsServices.update(duplicate.id, newEntry)
+      //     .then(updated => {
+      //       console.log('modified entry:', updated);
+      //       const updatedPersons = persons.map(person => {
+      //         if (person.id !== updated.id) { // if 
+      //           return person;
+      //         } else {
+      //           return updated;
+      //         }
+      //       });
+      //       setPersons(updatedPersons);
+      //       setMessage(`changed phone number for ${updated.name}`);
+      //       setTimeout(() => {
+      //         setMessage('');
+      //       }, 5000);
+      //     })
+      //     .catch(err => {
+      //       console.log(err);
+      //       setMessage(`ERROR: ${newEntry.name} has already been deleted from the server`)
+      //     });   
+      // }
       setNewName(''); // clears newName after persons is updated, so clicking add again will not add the same name again
     } 
-  }
 
   let phonebook;
   if (searchTerm === '') { 
